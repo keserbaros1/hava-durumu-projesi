@@ -1,17 +1,34 @@
-def ortalama_hesapla(notlar):
-    if not notlar:
-        return 0
-    return sum(notlar) / len(notlar)
+import requests
 
+API_KEY = "3aa86b7a0ca57eecdb5edba73c1df4d4"
+BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
+
+def get_weather(city_name):
+    params = {
+        "q": city_name,
+        "appid": API_KEY,
+        "units": "metric",
+        "lang": "tr"
+    }
+    response = requests.get(BASE_URL, params=params)
+    print("Status code:", response.status_code)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+def display_weather(data):
+    if data:
+        name = data["name"]
+        temp = data["main"]["temp"]
+        description = data["weather"][0]["description"]
+        print(f"{name} için hava durumu:")
+        print(f"Sıcaklık: {temp}°C")
+        print(f"Açıklama: {description}")
+    else:
+        print("Şehir bulunamadı veya API hatası.")
 
 if __name__ == "__main__":
-    ders_sayisi = int(input("Kaç tane dersiniz var? "))
-    notlar = []
-
-    for i in range(ders_sayisi):
-        n = float(input(f"{i+1}. dersin notunu girin: "))
-        notlar.append(n)
-
-    ort = ortalama_hesapla(notlar)
-    print(f"Not ortalamanız: {ort:.2f}")
-
+    city = input("Şehir adı girin: ")
+    weather_data = get_weather(city)
+    display_weather(weather_data)

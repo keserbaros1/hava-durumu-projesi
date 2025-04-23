@@ -1,15 +1,12 @@
-import unittest
-from main import ortalama_hesapla
+import pytest
+from main import get_weather
 
-class TestOrtalamaHesapla(unittest.TestCase):
-    def test_bos_liste(self):
-        self.assertEqual(ortalama_hesapla([]), 0)
+def test_get_weather_valid_city():
+    data = get_weather("İstanbul")
+    assert data is not None
+    assert "main" in data
+    assert "temp" in data["main"]
 
-    def test_normal_liste(self):
-        self.assertAlmostEqual(ortalama_hesapla([70, 80, 90]), 80.0)
-
-    def test_tek_not(self):
-        self.assertEqual(ortalama_hesapla([100]), 100.0)
-
-if __name__ == '__main__':
-    unittest.main()
+def test_get_weather_invalid_city():
+    data = get_weather("xxyyzzşş")  # geçersiz şehir adı
+    assert data is None
